@@ -4,9 +4,7 @@ import java.io.File
 
 fun main(args: Array<String>) {
     val arguments = parseArgs(args)
-    require(arguments.key >= 0) { "Error: ${arguments.key} must be positive" }
-
-    val result = arguments.mode(arguments.data, arguments.key)
+    val result = arguments.mode(arguments.alg, arguments.data, arguments.key)
     if (arguments.out == null) {
         println(result)
     } else {
@@ -17,18 +15,18 @@ fun main(args: Array<String>) {
 fun parseArgs(args: Array<String>): Arguments {
     val modeIndex = args.indexOf("-mode")
     val mode = when {
-        modeIndex < 0 ||
-        modeIndex == args.lastIndex ||
-        args[modeIndex + 1].startsWith("-") ||
-        args[modeIndex + 1] == "enc" -> ::encrypt
-        args[modeIndex + 1] == "dec" -> ::decrypt
+        modeIndex < 0 -> Algorithm::encrypt
+        modeIndex == args.lastIndex -> Algorithm::encrypt
+        args[modeIndex + 1].startsWith("-") -> Algorithm::encrypt
+        args[modeIndex + 1] == "enc" -> Algorithm::encrypt
+        args[modeIndex + 1] == "dec" -> Algorithm::decrypt
         else -> throw IllegalArgumentException("Error: mode must be 'enc' or 'dec'")
     }
 
     val keyIndex = args.indexOf("-key")
     val key = when {
-        keyIndex < 0 ||
-        keyIndex == args.lastIndex ||
+        keyIndex < 0 -> 0
+        keyIndex == args.lastIndex -> 0
         args[keyIndex + 1].startsWith("-") -> 0
         else -> try {
             args[keyIndex + 1].toInt()
@@ -57,15 +55,46 @@ fun parseArgs(args: Array<String>): Arguments {
         out = File(filename)
     }
 
-    return Arguments(mode, key, data, out)
+    val algIndex = args.indexOf("-alg")
+    val alg = when {
+        algIndex < 0 -> Algorithm.Shift
+        algIndex == args.lastIndex -> Algorithm.Shift
+        args[algIndex + 1].startsWith("-") -> Algorithm.Shift
+        args[algIndex + 1] == "shift" -> Algorithm.Shift
+        args[algIndex + 1] == "unicode" -> Algorithm.Unicode
+        else -> throw IllegalArgumentException("Error: algorithm must be 'shift' or 'unicode'")
+    }
+
+    return Arguments(mode, key, data, alg, out)
 }
 
-fun encrypt(data: String, key: Int): String {
-    return String(data.map { it + key }.toCharArray())
+enum class Algorithm {
+    Shift
+    {
+        private val alphabet = ('a'..'z') + ('A'..'Z')
+        private fun shifted(shift: Int) =
+            alphabet.subList(shift, 26) + alphabet.take(shift) + alphabet.drop(26 + shift) + alphabet.subList(26, 26 + shift)
+
+        private fun translate(shift: Int): Map<Char, Char> =
+            alphabet
+                .zip(shifted(shift))
+                .toMap()
+
+        override fun encrypt(data: String, key: Int): String {
+            val table = translate(((key % 26) + 26) % 26)
+            return String(data.map { table.getOrDefault(it, it) }.toCharArray())
+        }
+        override fun decrypt(data: String, key: Int) = encrypt(data, -key)
+    },
+    Unicode
+    {
+        override fun encrypt(data: String, key: Int) = String(data.map { it + key }.toCharArray())
+        override fun decrypt(data: String, key: Int) = encrypt(data, -key)
+    };
+
+    abstract fun encrypt(data: String, key: Int): String
+    abstract fun decrypt(data: String, key: Int): String
+
 }
 
-fun decrypt(data: String, key: Int): String {
-    return encrypt(data, -key)
-}
-
-data class Arguments(val mode: (String, Int) -> String, val key: Int, val data: String, val out: File?)
+data class Arguments(val mode: (Algorithm, String, Int) -> String, val key: Int, val data: String, val alg: Algorithm, val out: File?)
