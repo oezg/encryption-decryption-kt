@@ -1,8 +1,8 @@
 package encryptdecrypt
 
 const val DefaultKey = 0
-val DefaultMode = Algorithm::encrypt
 const val DefaultData = ""
+val DefaultMode = Algorithm::encrypt
 val DefaultAlgorithm = Algorithm.Shift
 
 fun main(args: Array<String>) {
