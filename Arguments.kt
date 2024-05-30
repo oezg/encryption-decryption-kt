@@ -48,10 +48,10 @@ fun parseArgs(args: Array<String>): Arguments {
 
     val algIndex = args.indexOf("-alg")
     val alg = when {
-        algIndex < 0 -> DefaultAlgortihm
-        algIndex == args.lastIndex -> DefaultAlgortihm
-        args[algIndex + 1].startsWith("-") -> DefaultAlgortihm
-        args[algIndex + 1] == "shift" -> DefaultAlgortihm
+        algIndex < 0 -> DefaultAlgorithm
+        algIndex == args.lastIndex -> DefaultAlgorithm
+        args[algIndex + 1].startsWith("-") -> DefaultAlgorithm
+        args[algIndex + 1] == "shift" -> DefaultAlgorithm
         args[algIndex + 1] == "unicode" -> Algorithm.Unicode
         else -> throw IllegalArgumentException("Error: algorithm must be 'shift' or 'unicode'")
     }
