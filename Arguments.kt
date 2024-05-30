@@ -7,19 +7,19 @@ data class Arguments(val mode: (Algorithm, String, Int) -> String, val key: Int,
 fun parseArgs(args: Array<String>): Arguments {
     val modeIndex = args.indexOf("-mode")
     val mode = when {
-        modeIndex < 0 -> Algorithm::encrypt
-        modeIndex == args.lastIndex -> Algorithm::encrypt
-        args[modeIndex + 1].startsWith("-") -> Algorithm::encrypt
-        args[modeIndex + 1] == "enc" -> Algorithm::encrypt
+        modeIndex < 0 -> DefaultMode
+        modeIndex == args.lastIndex -> DefaultMode
+        args[modeIndex + 1].startsWith("-") -> DefaultMode
+        args[modeIndex + 1] == "enc" -> DefaultMode
         args[modeIndex + 1] == "dec" -> Algorithm::decrypt
         else -> throw IllegalArgumentException("Error: mode must be 'enc' or 'dec'")
     }
 
     val keyIndex = args.indexOf("-key")
     val key = when {
-        keyIndex < 0 -> 0
-        keyIndex == args.lastIndex -> 0
-        args[keyIndex + 1].startsWith("-") -> 0
+        keyIndex < 0 -> DefaultKey
+        keyIndex == args.lastIndex -> DefaultKey
+        args[keyIndex + 1].startsWith("-") -> DefaultKey
         else -> try {
             args[keyIndex + 1].toInt()
         } catch (e: NumberFormatException) {
@@ -28,7 +28,7 @@ fun parseArgs(args: Array<String>): Arguments {
     }
 
     val dataIndex = args.indexOf("-data")
-    var data = ""
+    var data = DefaultData
     if (dataIndex >= 0 && dataIndex < args.lastIndex) {
         data = args[dataIndex + 1]
     } else {
@@ -48,10 +48,10 @@ fun parseArgs(args: Array<String>): Arguments {
 
     val algIndex = args.indexOf("-alg")
     val alg = when {
-        algIndex < 0 -> Algorithm.Shift
-        algIndex == args.lastIndex -> Algorithm.Shift
-        args[algIndex + 1].startsWith("-") -> Algorithm.Shift
-        args[algIndex + 1] == "shift" -> Algorithm.Shift
+        algIndex < 0 -> DefaultAlgortihm
+        algIndex == args.lastIndex -> DefaultAlgortihm
+        args[algIndex + 1].startsWith("-") -> DefaultAlgortihm
+        args[algIndex + 1] == "shift" -> DefaultAlgortihm
         args[algIndex + 1] == "unicode" -> Algorithm.Unicode
         else -> throw IllegalArgumentException("Error: algorithm must be 'shift' or 'unicode'")
     }
