@@ -30,9 +30,9 @@ fun parseArgs(args: Array<String>): Arguments {
         }
     }
 
-    val data = fetchValueByName("data", DefaultData) { data ->
-        fetchValueByName("in", null) { filename -> File(filename).readText() } ?: data
-    }
+    val input = fetchValueByName("in", null) { filename -> File(filename).readText() }
+
+    val data = fetchValueByName("data", input ?: DefaultData) { it }
 
     val out = fetchValueByName("out", null) { filename -> File(filename) }
 
