@@ -6,20 +6,25 @@ interface Algorithm {
 }
 
 object Shift : Algorithm {
-        override fun encrypt(data: String, key: Int): String {
-            val shift = ((key % 26) + 26) % 26
-            return String(
-                data.map { char ->
-                    when {
-                        char in 'a'..'z' -> 'a' + (((char - 'a') + shift) % 26)
-                        char in 'A'..'Z' -> 'A' + (((char - 'A') + shift) % 26)
-                        else -> char
-                    }
-                }.toCharArray()
-            )
-        }
+    const val a = 'a'
+    const val z = 'z'
+    const val A = 'A'
+    const val Z = 'Z'
+    const val width = z - a + 1
+    override fun encrypt(data: String, key: Int): String {
+        val shift = ((key % width) + width) % width
+        return String(
+            data.map { char ->
+                when {
+                    char in a..z -> a + (((char - a) + shift) % width)
+                    char in A..Z -> A + (((char - A) + shift) % width)
+                    else -> char
+                }
+            }.toCharArray()
+        )
+    }
 }
 
 object Unicode : Algorithm {
-        override fun encrypt(data: String, key: Int) = String(data.map { it + key }.toCharArray())
+    override fun encrypt(data: String, key: Int) = String(data.map { it + key }.toCharArray())
 }

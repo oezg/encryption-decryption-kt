@@ -14,7 +14,7 @@ internal class ArgumentsKtTest {
                 mode = DefaultMode,
                 key = 5,
                 data = "Welcome to hyperskill!",
-                alg = Algorithm.Shift,
+                alg = Shift,
                 out = null
             ),
             parseArgs(
@@ -26,7 +26,7 @@ internal class ArgumentsKtTest {
                 mode = Algorithm::decrypt,
                 key = 5,
                 data = "Bjqhtrj yt mdujwxpnqq!",
-                alg = Algorithm.Shift,
+                alg = Shift,
                 out = null
             ),
             parseArgs(
@@ -38,7 +38,7 @@ internal class ArgumentsKtTest {
                 mode = Algorithm::decrypt,
                 key = 5,
                 data = "Bjqhtrj yt mdujwxpnqq!",
-                alg = Algorithm.Shift,
+                alg = Shift,
                 out = File("dummy.txt")
             ),
             parseArgs(
@@ -54,7 +54,7 @@ internal class ArgumentsKtTest {
                 mode = DefaultMode,
                 key = 5,
                 data = "Welcome to hyperskill!",
-                alg = Algorithm.Unicode,
+                alg = Unicode,
                 out = null
             ),
             parseArgs(
@@ -66,7 +66,7 @@ internal class ArgumentsKtTest {
                 mode = Algorithm::decrypt,
                 key = 5,
                 data = "\\jqhtrj%yt%m~ujwxpnqq&",
-                alg = Algorithm.Unicode,
+                alg = Unicode,
                 out = null
             ),
             parseArgs(
@@ -78,7 +78,7 @@ internal class ArgumentsKtTest {
                 mode = Algorithm::decrypt,
                 key = 5,
                 data = "\\jqhtrj%yt%m~ujwxpnqq&",
-                alg = Algorithm.Unicode,
+                alg = Unicode,
                 out = File("dummy.txt")
             ),
             parseArgs(

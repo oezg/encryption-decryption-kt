@@ -6,42 +6,38 @@ data class Arguments(val mode: (Algorithm, String, Int) -> String, val key: Int,
 
 fun parseArgs(args: Array<String>): Arguments {
 
-    fun <T>fetchValueByName(name: String, default: T, defaultId: String? = null, decode: (String) -> T): T {
+    fun <T>fetchValueByName(name: String, defaultValue: T, defaultArg: String? = null, convertToValue: (String) -> T): T {
         val index = args.indexOf("-$name")
-        val value = args.getOrNull(index + 1)
-        return when {
-            index < 0 || value == null || value.startsWith("-") || value == defaultId  -> default
-            else -> decode(value)
-        }
+        val argument = args.getOrNull(index + 1)
+        return if (index < 0 || argument == null || argument.startsWith("-") || argument == defaultArg)
+            defaultValue
+        else
+            convertToValue(argument)
+    }
+
+    val alg = fetchValueByName("alg", DefaultAlgorithm, "shift") {
+        require(it == "unicode") { "Error: algorithm must be 'shift' or 'unicode'" }
+        return@fetchValueByName Unicode
     }
 
     val mode = fetchValueByName("mode", DefaultMode, "enc") {
-        when (it) {
-            "dec" -> Algorithm::decrypt
-            else -> throw IllegalArgumentException("Error: mode must be 'enc' or 'dec'")
-        }
+        require(it == "dec") { "Error: mode must be 'enc' or 'dec'" }
+        return@fetchValueByName Algorithm::decrypt
     }
 
     val key = fetchValueByName("key", DefaultKey) {
-        try {
-            it.toInt()
-        } catch (e: NumberFormatException) {
-            throw IllegalArgumentException("Error: key must be a number")
-        }
+        require(it.toIntOrNull() != null) { "Error: key must be a number" }
+        return@fetchValueByName it.toInt()
     }
 
-    val input = fetchValueByName("in", null) { filename -> File(filename).readText() }
+    val input = fetchValueByName("in", null) {
+        require(File(it).isFile) { "Error: input file does not exist" }
+        return@fetchValueByName File(it).readText()
+    }
 
     val data = fetchValueByName("data", input ?: DefaultData) { it }
 
     val out = fetchValueByName("out", null) { filename -> File(filename) }
-
-    val alg = fetchValueByName("alg", DefaultAlgorithm, "shift") {
-        when (it) {
-            "unicode" -> Algorithm.Unicode
-            else -> throw IllegalArgumentException("Error: algorithm must be 'shift' or 'unicode'")
-        }
-    }
 
     return Arguments(mode, key, data, alg, out)
 }
