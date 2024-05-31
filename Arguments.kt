@@ -52,7 +52,7 @@ fun parseArgs(args: Array<String>): Arguments {
         algIndex == args.lastIndex -> DefaultAlgorithm
         args[algIndex + 1].startsWith("-") -> DefaultAlgorithm
         args[algIndex + 1] == "shift" -> DefaultAlgorithm
-        args[algIndex + 1] == "unicode" -> Algorithm.Unicode
+        args[algIndex + 1] == "unicode" -> Unicode
         else -> throw IllegalArgumentException("Error: algorithm must be 'shift' or 'unicode'")
     }
 

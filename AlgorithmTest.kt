@@ -9,7 +9,7 @@ internal class AlgorithmTest {
     fun `Shift encrypt`() {
         assertEquals(
             /* expected = */ "Bjqhtrj yt mdujwxpnqq!",
-            /* actual = */ Algorithm.Shift.encrypt("Welcome to hyperskill!", 5)
+            /* actual = */ Shift.encrypt("Welcome to hyperskill!", 5)
         )
     }
 
@@ -17,7 +17,7 @@ internal class AlgorithmTest {
     fun `Shift decrypt`() {
         assertEquals(
             /* expected = */ "Welcome to hyperskill!",
-            /* actual = */ Algorithm.Shift.decrypt("Bjqhtrj yt mdujwxpnqq!", 5)
+            /* actual = */ Shift.decrypt("Bjqhtrj yt mdujwxpnqq!", 5)
         )
     }
 
@@ -25,7 +25,7 @@ internal class AlgorithmTest {
     fun `Unicode encrypt`() {
         assertEquals(
             /* expected = */ "\\jqhtrj%yt%m~ujwxpnqq&",
-            /* actual = */ Algorithm.Unicode.encrypt("Welcome to hyperskill!", 5)
+            /* actual = */ Unicode.encrypt("Welcome to hyperskill!", 5)
         )
     }
 
@@ -33,9 +33,7 @@ internal class AlgorithmTest {
     fun `Unicode decrypt`() {
         assertEquals(
             /* expected = */ "Welcome to hyperskill!",
-            /* actual = */ Algorithm.Unicode.decrypt("\\jqhtrj%yt%m~ujwxpnqq&", 5)
+            /* actual = */ Unicode.decrypt("\\jqhtrj%yt%m~ujwxpnqq&", 5)
         )
     }
-
-
 }
