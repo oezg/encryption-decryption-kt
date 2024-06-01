@@ -37,7 +37,7 @@ fun parseArgs(args: Array<String>): Arguments {
 
     val data = fetchValueByName("data", input ?: DefaultData) { it }
 
-    val out = fetchValueByName("out", null) { filename -> File(filename) }
+    val out = fetchValueByName("out", null) { File(it) }
 
     return Arguments(mode, key, data, alg, out)
 }
