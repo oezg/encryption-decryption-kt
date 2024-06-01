@@ -17,22 +17,22 @@ fun parseArgs(args: Array<String>): Arguments {
 
     val alg = fetchValueByName("alg", DefaultAlgorithm, "shift") {
         require(it == "unicode") { "Error: algorithm must be 'shift' or 'unicode'" }
-        return@fetchValueByName Unicode
+        Unicode
     }
 
     val mode = fetchValueByName("mode", DefaultMode, "enc") {
         require(it == "dec") { "Error: mode must be 'enc' or 'dec'" }
-        return@fetchValueByName Algorithm::decrypt
+        Algorithm::decrypt
     }
 
     val key = fetchValueByName("key", DefaultKey) {
         require(it.toIntOrNull() != null) { "Error: key must be a number" }
-        return@fetchValueByName it.toInt()
+        it.toInt()
     }
 
     val input = fetchValueByName("in", null) {
         require(File(it).isFile) { "Error: input file does not exist" }
-        return@fetchValueByName File(it).readText()
+        File(it).readText()
     }
 
     val data = fetchValueByName("data", input ?: DefaultData) { it }
